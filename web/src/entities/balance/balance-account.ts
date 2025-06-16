@@ -12,4 +12,22 @@ export default class BalanceAccount {
         public readonly created_at: Date,
         public readonly updated_at: Date
     ) { }
+
+    static create(balance_id: string, account_id: string, type: "add" | "subtract"): Partial<BalanceAccount> {
+        return {
+            balance_id: balance_id,
+            account_id: account_id,
+            operation_type: type,
+            created_at: new Date()
+        };
+    }
+
+    static edit(balance_id: string, account_id: string, type: "add" | "subtract"): Partial<BalanceAccount> {
+        return {
+            balance_id: balance_id,
+            account_id: account_id,
+            operation_type: type,
+            updated_at: new Date()
+        };
+    }
 }

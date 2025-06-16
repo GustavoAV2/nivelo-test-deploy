@@ -6,6 +6,48 @@ import { Month } from "@/utils/date/month";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 
+export interface BalanceSummaryModel {
+  id: string;
+  name: string;
+  total_amount: number;
+}
+
+interface RpcBalanceSummaryItem {
+  balance_id: string;
+  balance_name: string;
+  total_amount: number;
+}
+
+export async function getBalancesSummary() : Promise<BalanceSummaryModel[]> {
+    const supabaseClient = await createClient();
+
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !user) {
+        throw new Error(`Usuário não autenticado: ${userError?.message || "Nenhum usuário encontrado."}`);
+    }
+
+    const { data, error: rpcError } = await supabaseClient.rpc(
+        "get_all_balances_summary",
+        { p_user_id: user.id }
+    ) as { data: RpcBalanceSummaryItem[] | null; error: Error | null };
+
+
+    if (rpcError) {
+        throw new Error(`Erro ao buscar o resumo dos saldos: ${rpcError.message}`);
+    }
+
+    if (data == null){
+        return [];
+    }
+    const balancesSummary: BalanceSummaryModel[] = data.map((item: RpcBalanceSummaryItem) => ({
+        id: item.balance_id,
+        name: item.balance_name,
+        total_amount: item.total_amount
+    }));
+
+    return balancesSummary;
+};
+
 export async function getMonthlySummary(month: Month, year: number) {
     const supabaseClient = await createClient();
 
@@ -18,12 +60,9 @@ export async function getMonthlySummary(month: Month, year: number) {
         getTotalExpenses(supabaseClient, startDate, endDate)
     ]);
 
-    const economyPercentage = ((totalIncome - totalExpenses) / totalIncome) * 100;
-
     return {
         totalIncome,
-        totalExpenses,
-        economyPercentage
+        totalExpenses
     };
 };
 

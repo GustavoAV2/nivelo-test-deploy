@@ -7,7 +7,8 @@ interface Props {
 
 export default function BaseCentralizer(props: Props) {
     return (
-        <div className={`
+        <div
+            className={`
             ${props.className}
             flex flex-col flex-grow justify-center
             min-h-full`}

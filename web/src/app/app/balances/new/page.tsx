@@ -1,24 +1,17 @@
-import BaseButton from "@/components/base-button/base-button";
-import BaseFooter from "@/components/base-footer/base-footer";
-import BaseForm from "@/components/base-form/base-form";
-import BaseInput from "@/components/base-input/base-input";
-import BasePage from "@/components/base-page/base-page";
+import { getAccountsAsync } from "@/app/app/accounts/_actions/account-actions";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
+import PageBalanceNewForm from "./form";
 
-export default function PageBalancesNew() {
+export default async function PageBalanceNew() {
+    const accounts = await getAccountsAsync();
+    const accountOptions = accounts.map((account) => ({ value: account.id, label: account.name }));
+
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
-                <div className="mb-6">
-                    <BaseForm>
-                        <BaseInput className="mb-2" type={"text"} label={"Nome da visão de saldo:"} />
-                    </BaseForm>
-                </div>
-                <div className="flex flex-col items-stretch">
-                    <BaseButton className="mb-2" color="primary">Salvar</BaseButton>
-                    <BaseButton className="mb-2" color="secondary">Cancelar</BaseButton>
-                </div>
+        <BaseRoot>
+            <BasePage>
+                <PageBalanceNewForm accountOptions={accountOptions} />
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot >
     );
 }

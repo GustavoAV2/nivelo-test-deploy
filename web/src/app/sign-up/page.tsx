@@ -1,25 +1,29 @@
 "use client";
 
+import BaseAlert from "@/components/base-alert/base-alert";
 import BaseButton from "@/components/base-button/base-button";
-import BaseCentralizer from "@/components/base-centralizer/base-centralizer";
+import BaseFloatable from "@/components/base-floatable/base-floatable";
 import BaseForm from "@/components/base-form/base-form";
-import BaseFrame from "@/components/base-frame/base-frame";
 import BaseInput from "@/components/base-input/base-input";
-import BaseLabel from "@/components/base-label/base-label";
 import BaseLink from "@/components/base-link/base-link";
-import BasePage from "@/components/base-page/base-page";
+import BaseSubtitle from "@/components/base-subtitle/base-subtitle";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseTitle from "@/components/base-title/base-title";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
+import BaseRoot from "@/layout/base-root/base-root";
 import { UserAdd01Icon } from "hugeicons-react";
 import Link from "next/link";
 import { useState } from "react";
 import { signUp } from "../login/_actions/login-actions";
 
 export default function PageSignUp() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [isPasswordConfirmInvalid, setIsPasswordConfirmInvalid] = useState(false);
-    const [isPasswordLenghtInvalid, setIsPasswordLenghtInvalid] = useState(false);
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [passwordConfirm, setPasswordConfirm] = useState<string>("");
+    const [isPasswordConfirmInvalid, setIsPasswordConfirmInvalid] = useState<boolean>(false);
+    const [isPasswordLengthInvalid, setIsPasswordLengthInvalid] = useState<boolean>(false);
 
     const handleSignUpAsync = async () => {
         validatePasswordConfirmation();
@@ -27,16 +31,16 @@ export default function PageSignUp() {
         await signUp(name, email, password);
     };
 
-    const validatePasswordConfirmation = () => {
+    const validatePasswordConfirmation = (): void => {
         if (password !== passwordConfirm) {
             setIsPasswordConfirmInvalid(true);
             throw new Error("As senhas devem ser iguais.");
         }
     };
 
-    const validatePasswordLenght = () => {
-        if (password.length < 6 || passwordConfirm.length < 6) {
-            setIsPasswordLenghtInvalid(true);
+    const validatePasswordLenght = (): void => {
+        if (password.length < 6) {
+            setIsPasswordLengthInvalid(true);
             throw new Error("A senha deve ter no mínimo 6 caracteres.");
         }
     };
@@ -51,50 +55,90 @@ export default function PageSignUp() {
         setPasswordConfirm(password);
     };
 
-    const resetValidationErrors = () => {
+    const resetValidationErrors = (): void => {
         setIsPasswordConfirmInvalid(false);
-        setIsPasswordLenghtInvalid(false);
+        setIsPasswordLengthInvalid(false);
+    };
+
+    const passwordConfirmErrorAlert = () => {
+        if (isPasswordConfirmInvalid) {
+            return <BaseAlert color="danger" text="As senhas devem ser iguais." />;
+        }
+    };
+
+    const passwordLengthErrorAlert = () => {
+        if (isPasswordLengthInvalid) {
+            return <BaseAlert color="danger" text="A senha deve ter no mínimo 6 caracteres." />;
+        }
     };
 
     return (
-        <BaseFrame>
-            <BaseCentralizer>
-                <BasePage className="max-w-sm">
-                    <div className="flex flex-col items-center mb-10">
-                        <UserAdd01Icon className="mb-6" size={48}></UserAdd01Icon>
-                        <BaseLabel className="text-lg text-center">Quero me cadastrar</BaseLabel>
-                        <BaseLabel className="text-center">Informe seus dados para fazer um novo cadastro na plataforma</BaseLabel>
-                    </div>
+        <BaseRoot>
+            <BaseFloatable>
+                <BaseFlexColSpaced>
+                    <BaseFlexRowCenter>
+                        <UserAdd01Icon size={48} />
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseTitle>
+                            <BaseTextCenter text="Quero me cadastrar" />
+                        </BaseTitle>
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseSubtitle>
+                            <BaseTextCenter text="Informe seus dados para fazer um novo cadastro na plataforma" />
+                        </BaseSubtitle>
+                    </BaseFlexRowCenter>
                     <BaseForm onSubmit={handleSignUpAsync}>
-                        <div className="mb-10">
-                            <BaseInput className="mb-6" type={"text"} label={"Nome:"} required={true} onInput={setName}
-                                invalidFeedback="Insira um nome válido." />
-                            <BaseInput className="mb-6" type={"email"} label={"Email:"} required={true} onInput={setEmail}
-                                invalidFeedback="Insira um e-mail válido." />
-                            <BaseInput className="mb-6" type={"password"} label={"Senha:"} required={true} onInput={handleSetPassword}
-                                invalidFeedback="Insira uma senha para continuar." />
-                            <BaseInput type={"password"} label={"Confirmar senha:"} required={true} onInput={handleSetPasswordConfirmation}
-                                invalidFeedback={"Insira uma senha para continuar."} />
-                            {isPasswordConfirmInvalid &&
-                                <BaseLabel className="block mt-2 text-sm text-red-500">
-                                    As senhas devem ser iguais.
-                                </BaseLabel>
-                            }
-                            {isPasswordLenghtInvalid &&
-                                <BaseLabel className="block mt-2 text-sm text-red-500">
-                                    A senha deve ter no mínimo 6 caracteres.
-                                </BaseLabel>
-                            }
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <BaseButton type="submit" className="mb-4" color={"primary"}>Cadastrar</BaseButton>
-                            <Link href="/login">
-                                <BaseLink>Retornar à tela de login</BaseLink>
-                            </Link>
-                        </div>
+                        <BaseFlexColSpaced>
+                            <BaseInput
+                                type="text"
+                                label="Nome:"
+                                placeholder="Digite seu nome completo"
+                                required
+                                onInput={setName}
+                                invalidFeedback="Insira um nome válido."
+                            />
+                            <BaseInput
+                                type="email"
+                                label="Email:"
+                                placeholder="Digite seu e-mail"
+                                required
+                                onInput={setEmail}
+                                invalidFeedback="Insira um e-mail válido."
+                            />
+                            <BaseInput
+                                type="password"
+                                label="Senha:"
+                                placeholder="Crie uma senha (mínimo 6 caracteres)"
+                                required
+                                onInput={handleSetPassword}
+                                invalidFeedback="Insira uma senha para continuar."
+                            />
+                            <BaseInput
+                                type="password"
+                                label="Confirmar senha:"
+                                placeholder="Confirme sua senha"
+                                required
+                                onInput={handleSetPasswordConfirmation}
+                                invalidFeedback="Confirme sua senha para continuar."
+                            />
+                            {passwordConfirmErrorAlert()}
+                            {passwordLengthErrorAlert()}
+                            <BaseButton type="submit" color="primary">
+                                <BaseTextCenter text="Cadastrar" />
+                            </BaseButton>
+                        </BaseFlexColSpaced>
                     </BaseForm>
-                </BasePage>
-            </BaseCentralizer>
-        </BaseFrame>
+                    <BaseFlexRowCenter>
+                        <Link href="/login">
+                            <BaseLink>
+                                <BaseTextCenter text="Já tenho uma conta" />
+                            </BaseLink>
+                        </Link>
+                    </BaseFlexRowCenter>
+                </BaseFlexColSpaced>
+            </BaseFloatable>
+        </BaseRoot>
     );
 }

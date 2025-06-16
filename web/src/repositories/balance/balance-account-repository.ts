@@ -6,4 +6,14 @@ export default class BalanceAccountRepository extends BaseRepository<BalanceAcco
     constructor(supabaseClient: SupabaseClient) {
         super("balance_account", supabaseClient);
     }
+
+    async findByBalanceId(id: string): Promise<BalanceAccount[]> {
+        const { data, error } = await this.supabaseClient
+            .from(this.tableName)
+            .select("*")
+            .eq("balance_id", id);
+
+        if (error) throw error;
+        return data as BalanceAccount[];
+    }
 }

@@ -7,7 +7,8 @@ interface Props {
 
 export default function BaseFrame(props: Props) {
     return (
-        <div className={`
+        <div
+            className={`
             ${props.className}
             flex flex-col
             min-h-screen

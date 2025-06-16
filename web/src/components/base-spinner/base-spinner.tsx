@@ -1,5 +1,9 @@
-import styles from "./_styles/base-spinner.module.scss";
+import styles from "./_styles/base-spinner.module.css";
 
 export default function Spinner() {
-    return <div className={styles.spinner}></div>;
+    return (
+        <div className="animation-drop-in">
+            <div className={styles.spinner}></div>
+        </div>
+    );
 }

@@ -1,16 +1,12 @@
 import { ReactNode } from "react";
 
 interface Props {
-    className?: string;
     children: ReactNode;
 }
 
 export default function BaseTab(props: Props) {
     return (
-        <div className={`
-            ${props.className}
-            flex justify-between`}
-        >
+        <div className="flex flex-row gap-4">
             {props.children}
         </div>
     );

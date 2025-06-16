@@ -15,7 +15,7 @@ export async function login(email: string, password: string) {
 export async function loginWithGoogle() {
     const supabase = await createClient();
     const origin = process.env.NODE_ENV === "production"
-        ? "https://plataforma-financas.vercel.app"
+        ? "https://nivelo-app.vercel.app"
         : "http://localhost:3000";
 
     const { data, error } = await supabase.auth.signInWithOAuth({

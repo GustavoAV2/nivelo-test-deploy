@@ -1,16 +1,17 @@
 import { getAccountsAsync } from "@/app/app/accounts/_actions/account-actions";
 import { getCategoriesAsync } from "@/app/app/categories/_actions/category-actions";
-import BaseFooter from "@/components/base-footer/base-footer";
-import BasePage from "@/components/base-page/base-page";
+import BasePage from "@/layout/base-page/base-page";
 import { getExpenseByIdAsync } from "../../../_actions/expense-actions";
 import PageExpensesForm from "./form";
+import BaseRoot from "@/layout/base-root/base-root";
 
 interface Props {
-    params: { id: string; };
+    params: Promise<{ id: string; }>;
 }
 
 export default async function PageExpensesEdit(props: Props) {
-    const expenseId = props.params.id;
+    const params = await props.params;
+    const expenseId = params.id;
     const expense = await getExpenseByIdAsync(expenseId);
     const accounts = await getAccountsAsync();
     const categories = await getCategoriesAsync();
@@ -23,17 +24,17 @@ export default async function PageExpensesEdit(props: Props) {
             return <PageExpensesForm
                 expense={expense}
                 accountOptions={accountOptions}
-                categoryOptions={categoryOptions} />;
+                categoryOptions={categoryOptions}
+            />;
         }
         else { return null; }
     };
 
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
+        <BaseRoot>
+            <BasePage>
                 {pageexpensesForm()}
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot>
     );
 }

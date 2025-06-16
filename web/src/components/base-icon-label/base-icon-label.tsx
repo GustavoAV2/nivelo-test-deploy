@@ -8,7 +8,8 @@ interface Props {
 
 export default function BaseIconLabel(props: Props) {
     return (
-        <span className={`
+        <span
+            className={`
             ${props.className}
             flex items-center`}
         >

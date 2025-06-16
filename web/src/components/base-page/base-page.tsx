@@ -7,8 +7,8 @@ interface Props {
 
 export default function BasePage(props: Props) {
     return (
-        <div className={`
-            ${props.className}
+        <div
+            className={`${props.className}
             p-7 mx-auto container
             drop-in-animation`}
         >

@@ -1,14 +1,21 @@
 "use client";
 
+import BaseAlert from "@/components/base-alert/base-alert";
 import BaseButton from "@/components/base-button/base-button";
-import BaseCentralizer from "@/components/base-centralizer/base-centralizer";
+import BaseFloatable from "@/components/base-floatable/base-floatable";
 import BaseForm from "@/components/base-form/base-form";
-import BaseFrame from "@/components/base-frame/base-frame";
 import BaseInput from "@/components/base-input/base-input";
-import BaseLabel from "@/components/base-label/base-label";
 import BaseLink from "@/components/base-link/base-link";
-import BasePage from "@/components/base-page/base-page";
-import { Invoice03Icon } from "hugeicons-react";
+import BaseLogo from "@/components/base-logo/base-logo";
+import BaseSubtitle from "@/components/base-subtitle/base-subtitle";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseText from "@/components/base-text/base-text";
+import BaseTitle from "@/components/base-title/base-title";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexCol from "@/layout/base-flex-col/base-flex-col";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
+import BaseRoot from "@/layout/base-root/base-root";
+import { GoogleIcon, LogoutCircle01Icon } from "hugeicons-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
@@ -23,11 +30,8 @@ export default function PageLogin() {
         const errorCode = await login(email, password);
         if (!errorCode) { return; }
 
-        if (errorCode == "invalid_credentials") {
-            setIsInvalidCredentials(true);
-        } else {
-            redirect("/error");
-        }
+        if (errorCode == "invalid_credentials") { setIsInvalidCredentials(true); }
+        else { redirect("/error"); }
     };
 
     const handleSetEmail = (email: string) => {
@@ -44,46 +48,83 @@ export default function PageLogin() {
         setIsInvalidCredentials(false);
     };
 
+    const invalidCredentialsAlert = () => {
+        if (isInvalidCredentials) {
+            return <BaseAlert color="danger" text="E-mail ou senha inválidos. Tente novamente." />;
+        }
+    };
+
     return (
-        <BaseFrame>
-            <BaseCentralizer>
-                <BasePage className="max-w-sm">
+        <BaseRoot>
+            <BaseFloatable>
+                <BaseFlexColSpaced>
+                    <BaseFlexRowCenter>
+                        <BaseLogo />
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseTitle>
+                            <BaseTextCenter text="Nivelo" />
+                        </BaseTitle>
+                    </BaseFlexRowCenter>
+                    <BaseFlexCol>
+                        <BaseFlexRowCenter>
+                            <BaseSubtitle>
+                                <BaseTextCenter text="Bem-vindo(a)" />
+                            </BaseSubtitle>
+                        </BaseFlexRowCenter>
+                        <BaseFlexRowCenter>
+                            <BaseSubtitle>
+                                <BaseTextCenter text="Acesse sua plataforma de finanças" />
+                            </BaseSubtitle>
+                        </BaseFlexRowCenter>
+                    </BaseFlexCol>
                     <BaseForm onSubmit={handleLoginAsync}>
-                        <div className="mb-10 flex flex-col items-center">
-                            <Invoice03Icon className="mb-6" size={48} />
-                            <BaseLabel className="text-lg">Bem-vindo à</BaseLabel>
-                            <BaseLabel className="text-lg">Plataforma de Finanças</BaseLabel>
-                        </div>
-                        <div className="mb-10">
-                            <BaseInput className="mb-6" label="E-mail:" type="email" placeholder="email@email.com" onInput={handleSetEmail}
-                                required={true} invalidFeedback="Insira um e-mail válido." />
-                            <BaseInput label="Senha:" type="password" placeholder="******" onInput={handleSetPassword}
-                                required={true} invalidFeedback="Insira uma senha para continuar." />
-                            {isInvalidCredentials &&
-                                <BaseLabel className="block mt-2 text-sm text-red-500">
-                                    E-mail ou senha inválidos. Tente novamente.
-                                </BaseLabel>
-                            }
-                        </div>
-                        <div className="flex flex-col items-stretch">
-                            <BaseButton type="submit" className="mb-6" color="primary">Entrar</BaseButton>
-                        </div>
+                        <BaseFlexColSpaced>
+                            <BaseInput
+                                label="E-mail:"
+                                type="email"
+                                placeholder="Digite seu e-mail"
+                                onInput={handleSetEmail}
+                                invalidFeedback="Insira um e-mail válido."
+                                required
+                            />
+                            <BaseInput
+                                label="Senha:"
+                                type="password"
+                                placeholder="Digite sua senha"
+                                onInput={handleSetPassword}
+                                invalidFeedback="Insira uma senha para continuar."
+                                required
+                            />
+                            {invalidCredentialsAlert()}
+                            <BaseButton type="submit" color="primary">
+                                <BaseTextCenter text="Entrar" icon={<LogoutCircle01Icon />} />
+                            </BaseButton>
+                        </BaseFlexColSpaced>
                     </BaseForm>
-                    <BaseForm onSubmit={() => loginWithGoogle()}>
-                        <div className="flex flex-col items-stretch">
-                            <BaseButton type="submit" className="mb-10" color="secondary">Entrar com Google</BaseButton>
-                        </div>
+                    <BaseForm onSubmit={loginWithGoogle}>
+                        <BaseFlexColSpaced>
+                            <BaseButton type="submit" color="secondary">
+                                <BaseTextCenter text="Entrar com Google" icon={<GoogleIcon />} />
+                            </BaseButton>
+                        </BaseFlexColSpaced>
                     </BaseForm>
-                    <div className="flex flex-col items-center">
-                        <Link className="mb-3" href="/sign-up">
-                            <BaseLink className="self-center mb-4">Não é cadastrado?</BaseLink>
+                    <BaseFlexRowCenter>
+                        <Link href="/sign-up">
+                            <BaseLink>
+                                <BaseText text="Não é cadastrado?" />
+                            </BaseLink>
                         </Link>
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
                         <Link href="/recovery/send-email">
-                            <BaseLink className="self-center">Esqueci minha senha</BaseLink>
+                            <BaseLink>
+                                <BaseText text="Esqueci minha senha" />
+                            </BaseLink>
                         </Link>
-                    </div>
-                </BasePage>
-            </BaseCentralizer>
-        </BaseFrame>
+                    </BaseFlexRowCenter>
+                </BaseFlexColSpaced>
+            </BaseFloatable>
+        </BaseRoot>
     );
 }

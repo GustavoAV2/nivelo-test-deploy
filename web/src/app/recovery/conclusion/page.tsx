@@ -1,28 +1,41 @@
 import BaseButton from "@/components/base-button/base-button";
-import BaseCentralizer from "@/components/base-centralizer/base-centralizer";
-import BaseFrame from "@/components/base-frame/base-frame";
-import BaseLabel from "@/components/base-label/base-label";
-import BasePage from "@/components/base-page/base-page";
+import BaseFloatable from "@/components/base-floatable/base-floatable";
+import BaseSubtitle from "@/components/base-subtitle/base-subtitle";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseTitle from "@/components/base-title/base-title";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
+import BaseRoot from "@/layout/base-root/base-root";
 import { CheckmarkCircle02Icon } from "hugeicons-react";
 import Link from "next/link";
 
-export default function PageRecoveryConfirmation() {
+export default function PageRecoveryConclusion() {
     return (
-        <BaseFrame>
-            <BaseCentralizer>
-                <BasePage className="max-w-sm">
-                    <div className="flex flex-col items-center mb-10">
-                        <CheckmarkCircle02Icon className="mb-6" size={48}></CheckmarkCircle02Icon>
-                        <BaseLabel className="text-lg text-center mb-4">Sua senha foi alterada</BaseLabel>
-                        <BaseLabel className="text-center">Agora você pode fazer login normalmente através da tela de login</BaseLabel>
-                    </div>
-                    <div className="flex flex-col items-center">
+        <BaseRoot>
+            <BaseFloatable>
+                <BaseFlexColSpaced>
+                    <BaseFlexRowCenter>
+                        <CheckmarkCircle02Icon size={48} />
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseTitle>
+                            <BaseTextCenter text="Sua senha foi alterada" />
+                        </BaseTitle>
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseSubtitle>
+                            <BaseTextCenter text="Agora você pode fazer login normalmente através da tela de login" />
+                        </BaseSubtitle>
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
                         <Link href={"/app/home"}>
-                            <BaseButton className="mb-4" color={"primary"}>Ir para a tela inicial</BaseButton>
+                            <BaseButton color={"primary"}>
+                                <BaseTextCenter text="Ir para a tela inicial" />
+                            </BaseButton>
                         </Link>
-                    </div>
-                </BasePage>
-            </BaseCentralizer>
-        </BaseFrame>
+                    </BaseFlexRowCenter>
+                </BaseFlexColSpaced>
+            </BaseFloatable>
+        </BaseRoot>
     );
 }

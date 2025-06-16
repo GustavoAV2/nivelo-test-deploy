@@ -1,4 +1,8 @@
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import { CreditCardPosIcon, DollarCircleIcon, Home05Icon, MoneyBag02Icon, Tag01Icon } from "hugeicons-react";
 import Link from "next/link";
+import BaseFlexCol from "../../layout/base-flex-col/base-flex-col";
+import BaseText from "../base-text/base-text";
 import BaseMenuContainerHeader from "./base-menu-container-header";
 import BaseMenuContainerList from "./base-menu-container-list";
 import BaseMenuContainerListItem from "./base-menu-container-list-item";
@@ -12,47 +16,64 @@ interface Props {
 export default function BaseMenuContainer(props: Props) {
     const menuTransition = () => {
         if (!props.isMenuOpen)
-            return "-translate-x-full";
+            return "translate-x-full";
         else
-            return "-translate-x-0";
+            return "translate-x-0";
     };
 
     return (
-        <div className={`
-            ${menuTransition()}
-            fixed top-0 bottom-0 left-0 min-w-80
-            transition-transform
-            flex flex-col
-            shadow bg-blue-200
-            dark:bg-gray-900
-            text-gray-900 dark:text-white
+        <div
+            className={`
+                ${menuTransition()}
+                fixed top-0 bottom-0 right-0 min-w-80
+                overflow-y-auto
+                transition-transform
+                duration-300
+                flex flex-col
+                shadow-2xl border
+                border-slate-300 dark:border-slate-600
+                bg-slate-50 dark:bg-slate-800
             `}
         >
-            <BaseMenuContainerHeader onMenuClose={props.onMenuClose} />
-            <BaseMenuContainerList>
-                <div>
-                    <Link href="/app/home">
-                        <BaseMenuContainerListItem onClick={props.onMenuClose}>Página Inicial</BaseMenuContainerListItem>
-                    </Link>
-                    <Link href="/app/transactions">
-                        <BaseMenuContainerListItem onClick={props.onMenuClose}>Transações</BaseMenuContainerListItem>
-                    </Link>
-                    <Link href="/app/categories">
-                        <BaseMenuContainerListItem onClick={props.onMenuClose}>Categorias</BaseMenuContainerListItem>
-                    </Link>
-                    <Link href="/app/accounts">
-                        <BaseMenuContainerListItem onClick={props.onMenuClose}>Contas</BaseMenuContainerListItem>
-                    </Link>
-                    <Link href="/app/balances">
-                        <BaseMenuContainerListItem onClick={props.onMenuClose}>Saldos</BaseMenuContainerListItem>
-                    </Link>
-                </div>
-                <div>
-                    <BaseMenuContainerListItem onClick={props.onMenuLogout}>
-                        <span>Sair</span>
-                    </BaseMenuContainerListItem>
-                </div>
-            </BaseMenuContainerList>
-        </div>
+            <BaseFlexCol>
+                <BaseMenuContainerHeader onMenuClose={props.onMenuClose} />
+                <BaseMenuContainerList>
+                    <BaseFlexColSpaced>
+                        <BaseFlexCol>
+                            <Link href="/app/home">
+                                <BaseMenuContainerListItem onClick={props.onMenuClose}>
+                                    <BaseText text="Página Inicial" icon={<Home05Icon />} />
+                                </BaseMenuContainerListItem>
+                            </Link>
+                            <Link href="/app/transactions">
+                                <BaseMenuContainerListItem onClick={props.onMenuClose}>
+                                    <BaseText text="Transações" icon={<DollarCircleIcon />} />
+                                </BaseMenuContainerListItem>
+                            </Link>
+                            <Link href="/app/categories">
+                                <BaseMenuContainerListItem onClick={props.onMenuClose}>
+                                    <BaseText text="Categorias" icon={<Tag01Icon />} />
+                                </BaseMenuContainerListItem>
+                            </Link>
+                            <Link href="/app/accounts">
+                                <BaseMenuContainerListItem onClick={props.onMenuClose}>
+                                    <BaseText text="Contas" icon={<CreditCardPosIcon />} />
+                                </BaseMenuContainerListItem>
+                            </Link>
+                            <Link href="/app/balances">
+                                <BaseMenuContainerListItem onClick={props.onMenuClose}>
+                                    <BaseText text="Saldos" icon={<MoneyBag02Icon />} />
+                                </BaseMenuContainerListItem>
+                            </Link>
+                        </BaseFlexCol>
+                        <BaseFlexCol>
+                            <BaseMenuContainerListItem onClick={props.onMenuLogout}>
+                                <BaseText text="Sair" />
+                            </BaseMenuContainerListItem>
+                        </BaseFlexCol>
+                    </BaseFlexColSpaced>
+                </BaseMenuContainerList>
+            </BaseFlexCol>
+        </div >
     );
 }

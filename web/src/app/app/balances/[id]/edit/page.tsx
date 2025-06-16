@@ -1,25 +1,31 @@
-import BaseButton from "@/components/base-button/base-button";
-import BaseFooter from "@/components/base-footer/base-footer";
-import BaseForm from "@/components/base-form/base-form";
-import BaseInput from "@/components/base-input/base-input";
-import BasePage from "@/components/base-page/base-page";
+import { getAccountsAsync } from "@/app/app/accounts/_actions/account-actions";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
+import { getBalanceByIdAsync } from "../../_actions/balance-actions";
+import PageBalanceEditForm from "./form";
 
-export default function PageBalancesEdit() {
+interface Props {
+    params: Promise<{ id: string; }>;
+}
+
+export default async function PageBalanceEdit(props: Props) {
+    const params = await props.params;
+    const balanceId = params.id;
+
+    const balance = await getBalanceByIdAsync(balanceId);
+    const accounts = await getAccountsAsync();
+    const accountOptions = accounts.map((account) => ({ value: account.id, label: account.name }));
+
+    const pageBalanceEditForm = () => {
+        if (balance) { return <PageBalanceEditForm accountOptions={accountOptions} balance={balance} />; }
+        else { return null; }
+    };
+
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
-                <div className="mb-6">
-                    <BaseForm>
-                        <BaseInput className="mb-2" type={"text"} label={"Nome da visão do saldo:"} />
-                    </BaseForm>
-                </div>
-                <div className="flex flex-col items-stretch">
-                    <BaseButton className="mb-2" color="primary">Salvar</BaseButton>
-                    <BaseButton className="mb-2" color="secondary">Cancelar</BaseButton>
-                    <BaseButton color="danger">Excluir Registro</BaseButton>
-                </div>
+        <BaseRoot>
+            <BasePage>
+                {pageBalanceEditForm()}
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot >
     );
 }

@@ -1,14 +1,15 @@
-import BaseFooter from "@/components/base-footer/base-footer";
-import BasePage from "@/components/base-page/base-page";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
 import { getCategoryByIdAsync } from "../../_actions/category-actions";
 import PageCategoriesForm from "./form";
 
 interface Props {
-    params: { id: string; };
+    params: Promise<{ id: string; }>;
 }
 
 export default async function PageCategoriesEdit(props: Props) {
-    const categoryId = props.params.id;
+    const params = await props.params;
+    const categoryId = params.id;
     const category = await getCategoryByIdAsync(categoryId);
 
     const pageCategoriesForm = () => {
@@ -17,11 +18,10 @@ export default async function PageCategoriesEdit(props: Props) {
     };
 
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
+        <BaseRoot>
+            <BasePage>
                 {pageCategoriesForm()}
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot>
     );
 }

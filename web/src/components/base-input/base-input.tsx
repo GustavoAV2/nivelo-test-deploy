@@ -1,11 +1,10 @@
 "use client";
 
-import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import { SyntheticEvent, useState } from "react";
-import BaseInputLabel from "./base-input-label";
+import BaseInputFeedback from "./base-input-feedback";
+import BaseInputToggle from "./base-input-toggle";
 
 interface Props {
-    className?: string;
     placeholder?: string;
     type: string;
     label: string;
@@ -19,32 +18,24 @@ interface Props {
 }
 
 export default function BaseInput(props: Props) {
-    const [error, setError] = useState(false);
+    const [isInvalid, setIsInvalid] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const onInput = (event: SyntheticEvent): void => {
-        setError(false);
+        setIsInvalid(false);
         const target = event.target as HTMLInputElement;
         const value = target.value;
-
-        if (props.onInput) {
-            props.onInput(value);
-        }
+        if (props.onInput) { props.onInput(value); }
     };
 
     const onInvalid = (event: SyntheticEvent): void => {
         event.preventDefault();
-        if (props.invalidFeedback) {
-            setError(true);
-        }
+        if (props.invalidFeedback) { setIsInvalid(true); }
     };
 
     const inputType = () => {
-        if (isPasswordVisible && isTypePassword()) {
-            return "text";
-        } else {
-            return props.type;
-        }
+        if (isPasswordVisible && isTypePassword()) { return "text"; }
+        else { return props.type; }
     };
 
     const isTypePassword = () => {
@@ -56,17 +47,18 @@ export default function BaseInput(props: Props) {
     };
 
     return (
-        <div className={`${props.className}`}>
-            <BaseInputLabel label={props.label} />
+        <div>
+            <div className="mb-2">{props.label}</div>
             <div className="relative">
                 <input
                     className="
-                        px-2 py-1 h-9 w-full
+                        px-4 py-2 h-12 w-full
                         border rounded-lg
                         focus:outline-none
-                        border-slate-400
                         focus:border-blue-500
-                        dark:bg-gray-500"
+                        bg-slate-300 dark:bg-slate-600
+                        border-slate-300 dark:border-slate-600
+                    "
                     onInput={onInput}
                     onInvalid={onInvalid}
                     type={inputType()}
@@ -77,22 +69,16 @@ export default function BaseInput(props: Props) {
                     max={props.max}
                     value={props.value}
                 />
-                {props.type === "password" && (
-                    <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                        tabIndex={-1}
-                    >
-                        {isPasswordVisible ? <ViewOffSlashIcon /> : <ViewIcon />}
-                    </button>
-                )}
+                <BaseInputToggle
+                    isPasswordVisible={isPasswordVisible}
+                    type={props.type}
+                    onToggle={togglePasswordVisibility}
+                />
             </div>
-            {error && (
-                <div className="mt-2 text-sm text-red-500">
-                    {props.invalidFeedback}
-                </div>
-            )}
+            <BaseInputFeedback
+                isInvalid={isInvalid}
+                invalidFeedback={props.invalidFeedback}
+            />
         </div>
     );
 }

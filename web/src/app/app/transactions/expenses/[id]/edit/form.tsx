@@ -3,27 +3,27 @@
 import BaseButton from "@/components/base-button/base-button";
 import BaseForm from "@/components/base-form/base-form";
 import BaseInput from "@/components/base-input/base-input";
-import BasePage from "@/components/base-page/base-page";
+import { useNotification } from "@/components/base-notification/_hooks/base-notification-hook";
 import BaseSelect from "@/components/base-select/base-select";
 import BaseSelectItem from "@/components/base-select/base-select-item";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
 import Expense from "@/entities/expense/expense";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteExpenseAsync, editExpenseAsync } from "../../../_actions/expense-actions";
-import { useNotification } from "@/components/base-notification/_hooks/base-notification-hook";
 
 interface Props {
-  expense: Expense;
-  accountOptions: {
-    value: string,
-    label: string,
-  }[],
-  categoryOptions: {
-    value: string,
-    label: string,
-  }[],
+    expense: Expense;
+    accountOptions: {
+        value: string,
+        label: string,
+    }[],
+    categoryOptions: {
+        value: string,
+        label: string,
+    }[],
 }
-
 
 export default function PageTransactionExpenseEditClient(props: Props) {
     const router = useRouter();
@@ -34,7 +34,7 @@ export default function PageTransactionExpenseEditClient(props: Props) {
     const [accountId, setAccountId] = useState(props.expense.account_id);
     const [categoryId, setCategoryId] = useState(
         props.expense.category_id ||
-    props.categoryOptions[0].value
+        props.categoryOptions[0].value
     );
 
     const initialDateString = props.expense.effective_date
@@ -65,59 +65,66 @@ export default function PageTransactionExpenseEditClient(props: Props) {
     };
 
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
-                <div className="mb-10">
-                    <BaseForm>
-                        <BaseInput
-                            className="mb-4"
-                            type="text"
-                            label="Descrição:"
-                            value={description}
-                            onInput={(e) => setDescription(e)}
-                        />
-
-                        <BaseInput
-                            className="mb-4"
-                            type="number"
-                            label="Valor:"
-                            value={amount.toString()}
-                            onInput={(e) => setAmount(parseFloat(e))}
-                        />
-
-                        <BaseSelect className="mb-4" display="block" label="Selecione a categoria:" onChange={setCategoryId} value={categoryId}>
-                            {props.categoryOptions.map((opt) => (
-                                <BaseSelectItem key={opt.value} description={opt.label} value={opt.value} />
-                            ))}
-                        </BaseSelect>
-
-                        <BaseSelect className="mb-4" display="block" label="Selecione a conta:" onChange={setAccountId} value={accountId}>
-                            {props.accountOptions.map((opt) => (
-                                <BaseSelectItem key={opt.value} description={opt.label} value={opt.value} />
-                            ))}
-                        </BaseSelect>
-
-                        <BaseInput
-                            className="mb-4"
-                            type="date"
-                            label="Data de efetivação:"
-                            value={effectiveDate?.toString()}
-                            onInput={setEffectiveDate}
-                        />
-                    </BaseForm>
-                </div>
-                <div className="flex flex-col items-stretch">
-                    <BaseButton className="mb-2" color="primary" onClick={handleSubmitAsync}>
-            Salvar
-                    </BaseButton>
-                    <BaseButton className="mb-2" color="secondary" onClick={() => router.back()}>
-            Cancelar
-                    </BaseButton>
-                    <BaseButton color="danger" onClick={handleDeleteExpenseAsync}>
-            Excluir
-                    </BaseButton>
-                </div>
-            </BasePage>
-        </>
+        <BaseFlexColSpaced>
+            <BaseForm>
+                <BaseFlexColSpaced>
+                    <BaseInput
+                        type="text"
+                        label="Descrição:"
+                        value={description}
+                        onInput={setDescription}
+                    />
+                    <BaseInput
+                        type="number"
+                        label="Valor:"
+                        value={amount.toString()}
+                        onInput={(e) => setAmount(parseFloat(e))}
+                    />
+                    <BaseSelect
+                        display="block"
+                        label="Selecione a categoria:"
+                        onChange={setCategoryId}
+                        value={categoryId}
+                    >
+                        {props.categoryOptions.map((opt) => (
+                            <BaseSelectItem
+                                key={opt.value}
+                                description={opt.label}
+                                value={opt.value}
+                            />
+                        ))}
+                    </BaseSelect>
+                    <BaseSelect
+                        display="block"
+                        label="Selecione a conta:"
+                        onChange={setAccountId}
+                        value={accountId}
+                    >
+                        {props.accountOptions.map((opt) => (
+                            <BaseSelectItem
+                                key={opt.value}
+                                description={opt.label}
+                                value={opt.value}
+                            />
+                        ))}
+                    </BaseSelect>
+                    <BaseInput
+                        type="date"
+                        label="Data de efetivação:"
+                        value={effectiveDate?.toString()}
+                        onInput={setEffectiveDate}
+                    />
+                </BaseFlexColSpaced>
+            </BaseForm>
+            <BaseButton color="primary" onClick={handleSubmitAsync}>
+                <BaseTextCenter text="Salvar" />
+            </BaseButton>
+            <BaseButton color="secondary" onClick={() => router.back()}>
+                <BaseTextCenter text="Cancelar" />
+            </BaseButton>
+            <BaseButton color="danger" onClick={handleDeleteExpenseAsync}>
+                <BaseTextCenter text="Excluir" />
+            </BaseButton>
+        </BaseFlexColSpaced>
     );
 }

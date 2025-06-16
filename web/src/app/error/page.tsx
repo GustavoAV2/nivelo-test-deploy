@@ -1,20 +1,25 @@
-import BaseCentralizer from "@/components/base-centralizer/base-centralizer";
-import BaseFrame from "@/components/base-frame/base-frame";
-import BasePage from "@/components/base-page/base-page";
+import BaseFloatable from "@/components/base-floatable/base-floatable";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexCol from "@/layout/base-flex-col/base-flex-col";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
+import BaseRoot from "@/layout/base-root/base-root";
 import { Alert02Icon } from "hugeicons-react";
 
 export default function PageError() {
     return (
-        <BaseFrame>
-            <BaseCentralizer>
-                <BasePage className="max-w-sm">
-                    <div className="flex flex-col items-center">
-                        <Alert02Icon className="mb-4" size={48} />
-                        <div className="mb-2">Desculpe, ocorreu um erro inesperado.</div>
-                        <div className="text-sm">Contate o suporte para obter ajuda.</div>
-                    </div>
-                </BasePage>
-            </BaseCentralizer>
-        </BaseFrame>
+        <BaseRoot>
+            <BaseFloatable>
+                <BaseFlexColSpaced>
+                    <BaseFlexRowCenter>
+                        <Alert02Icon size={48} />
+                    </BaseFlexRowCenter>
+                    <BaseFlexCol>
+                        <BaseTextCenter text="Desculpe, ocorreu um erro inesperado." />
+                        <BaseTextCenter text="Por favor, tente novamente mais tarde." />
+                    </BaseFlexCol>
+                </BaseFlexColSpaced>
+            </BaseFloatable>
+        </BaseRoot>
     );
 }

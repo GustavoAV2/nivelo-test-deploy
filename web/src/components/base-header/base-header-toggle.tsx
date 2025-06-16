@@ -6,7 +6,7 @@ interface Props {
 
 export default function BaseHeaderToggle(props: Props) {
     return (
-        <button onClick={props.toggleMenu}>
+        <button className="cursor-pointer" onClick={props.toggleMenu}>
             <Menu01Icon className="text-black dark:text-white" />
         </button>
     );

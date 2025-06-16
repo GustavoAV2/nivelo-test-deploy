@@ -1,5 +1,7 @@
 import { getAccountsAsync } from "@/app/app/accounts/_actions/account-actions";
 import { getCategoriesAsync } from "@/app/app/categories/_actions/category-actions";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
 import PageTransactionIncomeNewClient from "./form";
 
 export default async function PageTransactionIncomeNew() {
@@ -16,5 +18,14 @@ export default async function PageTransactionIncomeNew() {
         label: account.name
     }));
 
-    return <PageTransactionIncomeNewClient categoryOptions={categoryOptions} accountOptions={accountOptions} />;
+    return (
+        <BaseRoot>
+            <BasePage>
+                <PageTransactionIncomeNewClient
+                    categoryOptions={categoryOptions}
+                    accountOptions={accountOptions}
+                />
+            </BasePage>
+        </BaseRoot>
+    );
 }

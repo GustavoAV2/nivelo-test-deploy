@@ -4,13 +4,10 @@ import { useState } from "react";
 import BaseMenu from "../base-menu/base-menu";
 import BaseModal from "../base-modal/base-modal";
 import { signOut } from "./_actions/actions";
+import BaseHeaderBack from "./base-header-back";
 import BaseHeaderToggle from "./base-header-toggle";
 
-interface Props {
-    className?: string;
-}
-
-export default function BaseHeader(props: Props) {
+export default function BaseHeader() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -23,17 +20,19 @@ export default function BaseHeader(props: Props) {
     };
 
     return (
-        <div className={`
-            ${props.className}
-            p-3 z-20
-            sticky top-0 min-h-12
-            flex shrink-0
-            bg-blue-300 dark:bg-gray-700 dark:text-white
-            `}
+        <div
+            className="
+                py-2 px-4 z-20 min-h-12
+                flex fixed top-0 left-0 right-0
+                border-b shadow
+                border-slate-300 dark:border-slate-600
+                bg-slate-50 dark:bg-slate-700
+            "
         >
-            <BaseHeaderToggle
-                toggleMenu={toggleMenu}
-            />
+            <div className="flex flex-row flex-grow justify-between items-center">
+                <BaseHeaderBack />
+                <BaseHeaderToggle toggleMenu={toggleMenu} />
+            </div>
             <BaseMenu
                 isMenuOpen={isMenuOpen}
                 onMenuClose={toggleMenu}
@@ -45,7 +44,8 @@ export default function BaseHeader(props: Props) {
                 isModalOpen={isModalOpen}
                 onModalClose={toggleModal}
                 onModalCancel={toggleModal}
-                onModalConfirm={() => signOut()} />
+                onModalConfirm={() => signOut()}
+            />
         </div>
     );
 }

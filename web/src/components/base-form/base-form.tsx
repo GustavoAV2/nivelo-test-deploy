@@ -3,7 +3,6 @@
 import { ReactNode, SyntheticEvent } from "react";
 
 interface Props {
-    className?: string;
     children: ReactNode;
     onSubmit?: () => void;
 }
@@ -15,7 +14,7 @@ export default function BaseForm(props: Props) {
     };
 
     return (
-        <form className={`${props.className}`} onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>
             {props.children}
         </form>
     );

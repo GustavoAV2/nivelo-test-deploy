@@ -1,16 +1,17 @@
 import { getAccountsAsync } from "@/app/app/accounts/_actions/account-actions";
 import { getCategoriesAsync } from "@/app/app/categories/_actions/category-actions";
-import BaseFooter from "@/components/base-footer/base-footer";
-import BasePage from "@/components/base-page/base-page";
+import BasePage from "@/layout/base-page/base-page";
 import { getIncomeByIdAsync } from "../../../_actions/income-actions";
 import PageTransactionIncomeEditForm from "./form";
+import BaseRoot from "@/layout/base-root/base-root";
 
 interface Props {
-    params: { id: string; };
+    params: Promise<{ id: string; }>;
 }
 
 export default async function PageIncomesEdit(props: Props) {
-    const incomeId = props.params.id;
+    const params = await props.params;
+    const incomeId = params.id;
     const income = await getIncomeByIdAsync(incomeId);
     const accounts = await getAccountsAsync();
     const categories = await getCategoriesAsync();
@@ -33,11 +34,10 @@ export default async function PageIncomesEdit(props: Props) {
     };
 
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
+        <BaseRoot>
+            <BasePage>
                 {pageIncomesForm()}
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot>
     );
 }

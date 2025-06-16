@@ -17,7 +17,8 @@ export async function resetPassword(password: string, code: string) {
 
 export async function resetPasswordForEmail(email: string) {
     const supabase = await createClient();
-    const origin = headers().get("origin");
+    const nextHeaders = await headers();
+    const origin = nextHeaders.get("origin");
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${origin}/recovery/new-password`
