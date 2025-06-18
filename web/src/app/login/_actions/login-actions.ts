@@ -14,9 +14,7 @@ export async function login(email: string, password: string) {
 
 export async function loginWithGoogle() {
     const supabase = await createClient();
-    const origin = process.env.NODE_ENV === "production"
-        ? "https://nivelo-app.vercel.app"
-        : "http://localhost:3000";
+    const origin = getOriginByEnvironment();
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -42,3 +40,10 @@ export async function signUp(name: string, email: string, password: string) {
 
     redirect("/app/home");
 }
+
+const getOriginByEnvironment = () => {
+    if (process.env.NODE_ENV === "production") {
+        return process.env.NODE_URL_PRODUCTION;
+    }
+    return "http://localhost:3000";
+};

@@ -1,4 +1,4 @@
-    # Etapa 1: Build
+ # Etapa 1: Build
     FROM node:22-alpine AS builder
 
     WORKDIR /app
@@ -34,5 +34,5 @@
     # Expor a porta para o Cloud Run
     EXPOSE 8080
 
-    # Comando para iniciar o Next.js em SSR
+    # Comando para iniciar o servidor Next.js
     CMD ["npx", "next", "start", "-p", "8080"]
