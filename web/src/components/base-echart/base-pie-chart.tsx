@@ -12,14 +12,12 @@ interface Props {
     data: PieChartDataPoint[];
     top: number;
     chartName?: string;
-    className?: string;
 }
 
 export default function BasePieChart({
     data,
     top,
-    chartName = "Resumo",
-    className
+    chartName = "Resumo"
 }: Props) {
     const chartRef = useRef<HTMLDivElement>(null);
 
@@ -118,7 +116,7 @@ export default function BasePieChart({
     }, [data, chartName, top, isDarkMode]);
 
     return (
-        <div className={className}>
+        <div>
             <div ref={chartRef} style={{ width: 200, height: 200 }} />
         </div>
     );

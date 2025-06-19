@@ -1,5 +1,7 @@
 "use server";
 
+import Expense from "@/entities/expense/expense";
+import Income from "@/entities/income/income";
 import ExpenseRepository from "@/repositories/expense/expense-repository";
 import IncomeRepository from "@/repositories/income/income-repository";
 import { Month } from "@/utils/date/month";
@@ -7,18 +9,18 @@ import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export interface BalanceSummaryModel {
-  id: string;
-  name: string;
-  total_amount: number;
+    id: string;
+    name: string;
+    total_amount: number;
 }
 
 interface RpcBalanceSummaryItem {
-  balance_id: string;
-  balance_name: string;
-  total_amount: number;
+    balance_id: string;
+    balance_name: string;
+    total_amount: number;
 }
 
-export async function getBalancesSummary() : Promise<BalanceSummaryModel[]> {
+export async function getBalancesSummary(): Promise<BalanceSummaryModel[]> {
     const supabaseClient = await createClient();
 
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
@@ -36,7 +38,7 @@ export async function getBalancesSummary() : Promise<BalanceSummaryModel[]> {
         throw new Error(`Erro ao buscar o resumo dos saldos: ${rpcError.message}`);
     }
 
-    if (data == null){
+    if (data == null) {
         return [];
     }
     const balancesSummary: BalanceSummaryModel[] = data.map((item: RpcBalanceSummaryItem) => ({
@@ -55,27 +57,35 @@ export async function getMonthlySummary(month: Month, year: number) {
     const endDate = new Date(year, month);
     endDate.setMonth(endDate.getMonth() + 1);
 
-    const [totalIncome, totalExpenses] = await Promise.all([
-        getTotalIncome(supabaseClient, startDate, endDate),
-        getTotalExpenses(supabaseClient, startDate, endDate)
+    const [incomes, expenses] = await Promise.all([
+        getIncomesByDate(supabaseClient, startDate, endDate),
+        getExpensesByDate(supabaseClient, startDate, endDate)
     ]);
+
+    const totalIncome = incomes.reduce((total, income) => total + income.amount, 0);
+    const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
+
+    const mapCategories = (expense: Expense) => expense.category?.name || "Sem Categoria";
+    const categories = new Set(expenses.map(mapCategories));
 
     return {
         totalIncome,
-        totalExpenses
+        totalExpenses,
+        categoriesExpenses: Array.from<string>(categories),
+        expenses
     };
 };
 
-async function getTotalIncome(supabaseClient: SupabaseClient, startDate: Date, endDate: Date): Promise<number> {
+async function getIncomesByDate(supabaseClient: SupabaseClient, startDate: Date, endDate: Date): Promise<Income[]> {
     const incomeRepository = new IncomeRepository(supabaseClient);
 
     const incomes = await incomeRepository.findByDateRange(startDate, endDate);
-    return incomes.reduce((total, income) => total + income.amount, 0);
+    return incomes;
 }
 
-async function getTotalExpenses(supabaseClient: SupabaseClient, startDate: Date, endDate: Date): Promise<number> {
+async function getExpensesByDate(supabaseClient: SupabaseClient, startDate: Date, endDate: Date): Promise<Expense[]> {
     const expenseRepository = new ExpenseRepository(supabaseClient);
 
     const expenses = await expenseRepository.findByDateRange(startDate, endDate);
-    return expenses.reduce((total, expense) => total + expense.amount, 0);
+    return expenses;
 }

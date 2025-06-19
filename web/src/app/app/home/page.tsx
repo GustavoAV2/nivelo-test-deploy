@@ -3,6 +3,7 @@ import { getUser } from "@/app/user/_actions/user-actions";
 import BaseActions from "@/components/base-actions/base-actions";
 import BaseAvatar from "@/components/base-avatar/base-avatar";
 import BaseCard from "@/components/base-card/base-card";
+import BaseBarChart from "@/components/base-echart/base-bar-chart";
 import BasePieChart from "@/components/base-echart/base-pie-chart";
 import BaseHighlight from "@/components/base-highlight/base-highlight";
 import BaseText from "@/components/base-text/base-text";
@@ -44,10 +45,27 @@ export default async function PageHome() {
         return Number((summary.totalExpenses / 100).toFixed(2));
     };
 
-    const chartData = [
+    const chartPieData = [
         { name: "Economia", value: Number(((summary.totalIncome / 100) - expenses()).toFixed(2)) },
         { name: "Gastos", value: expenses() }
     ];
+
+    const chartBarData = summary.expenses.map(expense => ({
+        name: expense.category?.name ?? "Sem Categoria",
+        value: Number((expense.amount / 100).toFixed(2))
+    }));
+
+    const expensesByCategoria: { [key: string]: number } = {};
+    chartBarData.forEach(item => {
+        const { name, value } = item;
+
+        if (expensesByCategoria[name]) {
+            expensesByCategoria[name] += value;
+        } else {
+            expensesByCategoria[name] = value;
+        }
+    }
+    );
 
     return (
         <BaseRoot>
@@ -59,13 +77,11 @@ export default async function PageHome() {
                     </BaseFlexColSpaced>
                     <BaseCard>
                         <BaseText text="Resumo do mês"></BaseText>
-                    </BaseCard>
-                    <BaseCard>
                         <BaseFlexColSpaced>
                             <BaseFlexRowSpaced>
                                 <BaseFlexColSpaced>
                                     <BaseFlexRowCenter>
-                                        <BasePieChart data={chartData} top={-20} />
+                                        <BasePieChart data={chartPieData} top={-20} />
                                     </BaseFlexRowCenter>
                                 </BaseFlexColSpaced>
                                 <BaseFlexColSpaced>
@@ -85,19 +101,33 @@ export default async function PageHome() {
                             </BaseFlexRowSpaced>
                         </BaseFlexColSpaced>
                     </BaseCard>
+
                     <BaseCard>
                         <BaseText text="Saldos"></BaseText>
+                        {balancesSummary.length === 0 ?
+                            <BaseText text="Nenhum saldo encontrado." /> :
+                            <BaseFlexColSpaced>
+                                {balancesSummary.map(balance => (
+                                    <div key={balance.id} className="flex flex-col">
+                                        <BaseHighlight>
+                                            <BaseText text={numberToMoney(balance.total_amount, "R$")} />
+                                        </BaseHighlight>
+                                        <BaseText text={balance.name} />
+                                    </div>
+                                ))}
+                            </BaseFlexColSpaced>
+                        }
                     </BaseCard>
+
                     <BaseCard>
+                        <BaseText text="Categorias de gastos do mês"></BaseText>
                         <BaseFlexColSpaced>
-                            {balancesSummary.map(balance => (
-                                <div key={balance.id} className="flex flex-col">
-                                    <BaseHighlight>
-                                        <BaseText text={numberToMoney(balance.total_amount, "R$")} />
-                                    </BaseHighlight>
-                                    <BaseText text={balance.name} />
-                                </div>
-                            ))}
+                            <BaseFlexRowSpaced>
+                                {expensesByCategoria == null ?
+                                    <BaseText text="Nenhum gasto esse mês." /> :
+                                    <BaseBarChart data={expensesByCategoria} />
+                                }
+                            </BaseFlexRowSpaced>
                         </BaseFlexColSpaced>
                     </BaseCard>
                 </BaseFlexColSpaced>
