@@ -20,7 +20,10 @@ export default class ExpenseRepository extends BaseRepository<Expense> {
     async findByDateRange(startDate: Date, endDate?: Date): Promise<Expense[]> {
         let query = this.supabaseClient
             .from(this.tableName)
-            .select("*");
+            .select(`
+                *,
+                category(*)
+            `);
 
         if (startDate) {
             query = query.gte("effective_date", startDate.toISOString());
