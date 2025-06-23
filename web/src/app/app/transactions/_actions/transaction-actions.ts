@@ -7,10 +7,15 @@ import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TransactionModel, TransactionType } from "../_components/transaction/transaction.model";
 
-export async function getTransactionsAsync(typeFilter?: TransactionType | null) {
+export async function getTransactionsAsync(typeFilter?: TransactionType | null, accountId?: string) {
     const supabaseClient = await createClient();
     let transactions: TransactionModel[] = [];
     console.log("Fetching transactions with type filter:", typeFilter);
+
+    if (accountId != null && accountId.length > 0) {
+        transactions = await getTransactionsByAccountIdAsync(supabaseClient, accountId);
+        return sortTransaction(transactions);
+    }
 
     switch (typeFilter) {
         case TransactionType.Income:
@@ -31,6 +36,19 @@ export async function getTransactionsAsync(typeFilter?: TransactionType | null) 
     }
 
     return sortTransaction(transactions);
+}
+
+async function getTransactionsByAccountIdAsync(supabaseClient: SupabaseClient, account_id: string): Promise<TransactionModel[]> {
+    const expenseRepository = new ExpenseRepository(supabaseClient);
+    const incomeRepository = new IncomeRepository(supabaseClient);
+    const transferRepository = new TransferRepository(supabaseClient);
+    const incomes = await incomeRepository.findByAccountId(account_id);
+    const transfers = await transferRepository.findByAccountId(account_id);
+    const expenses = await expenseRepository.findByAccountId(account_id);
+    return [...TransactionModel.fromIncomes(incomes),
+        ...TransactionModel.fromTransfers(transfers),
+        ...TransactionModel.fromExpenses(expenses)
+    ];
 }
 
 async function getExpenseTransactionsAsync(supabaseClient: SupabaseClient): Promise<TransactionModel[]> {

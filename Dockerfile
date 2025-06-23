@@ -26,7 +26,6 @@
     COPY --from=builder /app/web/.next ./.next
     COPY --from=builder /app/web/node_modules ./node_modules
     COPY --from=builder /app/web/package.json ./package.json
-    COPY --from=builder /app/web/next.config.ts ./next.config.ts
 
     # Variáveis de ambiente para produção
     ENV NODE_ENV=production

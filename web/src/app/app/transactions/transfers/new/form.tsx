@@ -4,6 +4,7 @@ import { createTransferAsync } from "@/app/app/transactions/_actions/transfer-ac
 import BaseButton from "@/components/base-button/base-button";
 import BaseForm from "@/components/base-form/base-form";
 import BaseInput from "@/components/base-input/base-input";
+import { useNotification } from "@/components/base-notification/_hooks/base-notification-hook";
 import BaseSelect from "@/components/base-select/base-select";
 import BaseSelectItem from "@/components/base-select/base-select-item";
 import BaseTextCenter from "@/components/base-text-center/base-text-center";
@@ -17,6 +18,7 @@ interface Props {
 
 export default function PageTransactionTransferNewClient(props: Props) {
     const router = useRouter();
+    const { showNotification } = useNotification();
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState(0);
     const [sourceAcountId, setSourceAcountId] = useState(
@@ -37,7 +39,7 @@ export default function PageTransactionTransferNewClient(props: Props) {
             description,
             new Date(effectiveDate)
         );
-        alert("Transferência criada com sucesso!");
+        showNotification("Transferência criada com sucesso!");
         router.back();
     };
 

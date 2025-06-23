@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 interface Props {
     text: string;
     icon?: ReactNode;
+    bold?: boolean;
 }
 
 export default function BaseText(props: Props) {
@@ -18,8 +19,12 @@ export default function BaseText(props: Props) {
         }
     };
 
+    const className = () => {
+        return `flex flex-row gap-2 ${props.bold ? "font-bold" : ""}`;
+    };
+
     return (
-        <span className="flex flex-row gap-2">
+        <span className={className()}>
             {icon()}
             {text()}
         </span>
