@@ -3,10 +3,10 @@ import Income from "@/entities/income/income";
 import Transfer from "@/entities/transfer/transfer";
 
 export enum TransactionType {
-    Balance = "balance",
-    Income = "income",
-    Expense = "expense",
-    Transfer = "transfer"
+    Balance = "Saldo",
+    Income = "Receita",
+    Expense = "Gasto",
+    Transfer = "Transferência"
 }
 
 export class TransactionModel {

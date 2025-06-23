@@ -7,6 +7,20 @@ export default class BalanceRepository extends BaseRepository<Balance> {
         super("balance", supabaseClient);
     }
 
+    async findByIdIncludeAccounts(id: string): Promise<Balance> {
+        const { data, error } = await this.supabaseClient
+            .from(this.tableName)
+            .select(`
+                *,
+                balance_account(*, account(*))
+            `)
+            .eq("id", id)
+            .maybeSingle();
+
+        if (error) throw error;
+        return data as Balance;
+    }
+
     async findByUserId(user_id: string): Promise<Balance> {
         const { data, error } = await this.supabaseClient
             .from(this.tableName)
@@ -16,5 +30,17 @@ export default class BalanceRepository extends BaseRepository<Balance> {
 
         if (error) throw error;
         return data as Balance;
+    }
+
+    async findAllIncludeAccounts(): Promise<Balance[]> {
+        const { data, error } = await this.supabaseClient
+            .from(this.tableName)
+            .select(`
+                *,
+                balance_account(*, account(*))
+            `);
+
+        if (error) throw error;
+        return data as Balance[];
     }
 }

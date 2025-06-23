@@ -1,11 +1,13 @@
 "use client";
 
 import BaseButton from "@/components/base-button/base-button";
-import BaseFooter from "@/components/base-footer/base-footer";
 import BaseForm from "@/components/base-form/base-form";
 import BaseInput from "@/components/base-input/base-input";
 import { useNotification } from "@/components/base-notification/_hooks/base-notification-hook";
-import BasePage from "@/components/base-page/base-page";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createAccountAsync } from "../_actions/account-actions";
@@ -26,19 +28,25 @@ export default function PageAccountsNew() {
     };
 
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
-                <div className="mb-6">
+        <BaseRoot>
+            <BasePage>
+                <BaseFlexColSpaced>
                     <BaseForm>
-                        <BaseInput className="mb-2" type={"text"} label={"Nome da Conta:"} required={true} onInput={setAccountName} />
+                        <BaseInput
+                            type="text"
+                            label="Nome da Conta:"
+                            onInput={setAccountName}
+                            required
+                        />
                     </BaseForm>
-                </div>
-                <div className="flex flex-col items-stretch">
-                    <BaseButton className="mb-2" color="primary" onClick={handleCreateAccountAsync}>Salvar</BaseButton>
-                    <BaseButton className="mb-2" color="secondary" onClick={backToAccountsList}>Cancelar</BaseButton>
-                </div>
+                    <BaseButton color="primary" onClick={handleCreateAccountAsync}>
+                        <BaseTextCenter text="Salvar" />
+                    </BaseButton>
+                    <BaseButton color="secondary" onClick={backToAccountsList}>
+                        <BaseTextCenter text="Cancelar" />
+                    </BaseButton>
+                </BaseFlexColSpaced>
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot>
     );
 }

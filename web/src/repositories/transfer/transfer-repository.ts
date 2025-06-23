@@ -7,6 +7,17 @@ export default class TransferRepository extends BaseRepository<Transfer> {
         super("transfer", supabaseClient);
     }
 
+    async findByAccountId(accountId: string): Promise<Transfer[]> {
+        const { data, error } = await this.supabaseClient
+            .from(this.tableName)
+            .select("*")
+            .or(`source_account_id.eq.${accountId},target_account_id.eq.${accountId}`);
+
+
+        if (error) throw error;
+        return data as Transfer[];
+    }
+
     async findByDateRange(startDate: string, endDate?: string): Promise<Transfer[]> {
         const finalEndDate = endDate || new Date().toISOString();
 

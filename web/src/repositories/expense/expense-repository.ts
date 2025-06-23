@@ -7,6 +7,16 @@ export default class ExpenseRepository extends BaseRepository<Expense> {
         super("expense", supabaseClient);
     }
 
+    async findByAccountId(accountId: string): Promise<Expense[]> {
+        const { data, error } = await this.supabaseClient
+            .from(this.tableName)
+            .select("*")
+            .eq("account_id", accountId);
+
+        if (error) throw error;
+        return data as Expense[];
+    }
+
     async findByCategoryId(categoryId: string): Promise<Expense[]> {
         const { data, error } = await this.supabaseClient
             .from(this.tableName)
@@ -20,7 +30,10 @@ export default class ExpenseRepository extends BaseRepository<Expense> {
     async findByDateRange(startDate: Date, endDate?: Date): Promise<Expense[]> {
         let query = this.supabaseClient
             .from(this.tableName)
-            .select("*");
+            .select(`
+                *,
+                category(*)
+            `);
 
         if (startDate) {
             query = query.gte("effective_date", startDate.toISOString());

@@ -1,13 +1,16 @@
 "use client";
 
 import BaseButton from "@/components/base-button/base-button";
-import BaseCentralizer from "@/components/base-centralizer/base-centralizer";
+import BaseFloatable from "@/components/base-floatable/base-floatable";
 import BaseForm from "@/components/base-form/base-form";
-import BaseFrame from "@/components/base-frame/base-frame";
 import BaseInput from "@/components/base-input/base-input";
-import BaseLabel from "@/components/base-label/base-label";
 import BaseLink from "@/components/base-link/base-link";
-import BasePage from "@/components/base-page/base-page";
+import BaseSubtitle from "@/components/base-subtitle/base-subtitle";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseTitle from "@/components/base-title/base-title";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
+import BaseRoot from "@/layout/base-root/base-root";
 import { ForgotPasswordIcon } from "hugeicons-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,31 +19,51 @@ import { resetPasswordForEmail } from "../_actions/recovery-actions";
 export default function PageRecovery() {
     const [email, setEmail] = useState("");
 
+    const handleSendRecoveryEmail = async () => {
+        await resetPasswordForEmail(email);
+    };
+
     return (
-        <BaseFrame>
-            <BaseCentralizer>
-                <BasePage className="max-w-sm">
-                    <div className="flex flex-col items-center mb-10">
-                        <ForgotPasswordIcon className="mb-6" size={48}></ForgotPasswordIcon>
-                        <BaseLabel className="text-lg text-center">Esqueceu a senha?</BaseLabel>
-                        <BaseLabel className="text-center">Não se preocupe, enviaremos um e-mail de recuperação para a sua conta</BaseLabel>
-                    </div>
-                    <BaseForm onSubmit={() => resetPasswordForEmail(email)}>
-                        <div className="mb-10">
-                            <BaseInput className="mb-6" type={"email"} label={"Email:"} onInput={setEmail} required={true}
-                                invalidFeedback={"Insira um e-mail válido"} />
-                        </div>
-                        <div className="flex flex-col items-stretch">
-                            <BaseButton className="mb-4" color={"primary"}>Enviar e-mail de recuperação</BaseButton>
-                        </div>
+        <BaseRoot>
+            <BaseFloatable>
+                <BaseFlexColSpaced>
+                    <BaseFlexRowCenter>
+                        <ForgotPasswordIcon size={48} />
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseTitle>
+                            <BaseTextCenter text="Esqueceu a senha?" />
+                        </BaseTitle>
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseSubtitle>
+                            <BaseTextCenter text="Não se preocupe, enviaremos um e-mail de recuperação para a sua conta" />
+                        </BaseSubtitle>
+                    </BaseFlexRowCenter>
+                    <BaseForm onSubmit={handleSendRecoveryEmail}>
+                        <BaseFlexColSpaced>
+                            <BaseInput
+                                type="email"
+                                label="Email:"
+                                placeholder="Digite seu e-mail"
+                                onInput={setEmail}
+                                required
+                                invalidFeedback="Insira um e-mail válido"
+                            />
+                            <BaseButton type="submit" color="primary">
+                                <BaseTextCenter text="Enviar e-mail de recuperação" />
+                            </BaseButton>
+                        </BaseFlexColSpaced>
                     </BaseForm>
-                    <div className="flex flex-col items-center">
+                    <BaseFlexRowCenter>
                         <Link href="/login">
-                            <BaseLink>Retornar à tela de login</BaseLink>
+                            <BaseLink>
+                                <BaseTextCenter text="Retornar à tela de login" />
+                            </BaseLink>
                         </Link>
-                    </div>
-                </BasePage>
-            </BaseCentralizer>
-        </BaseFrame >
+                    </BaseFlexRowCenter>
+                </BaseFlexColSpaced>
+            </BaseFloatable>
+        </BaseRoot>
     );
 }

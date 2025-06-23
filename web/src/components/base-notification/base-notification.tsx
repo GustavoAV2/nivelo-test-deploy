@@ -31,31 +31,31 @@ export default function BaseNotification(props: Props) {
 
     const notificationIcon = () => {
         switch (props.type) {
-        case BaseNotificationType.Success:
-            return <CheckmarkCircle02Icon size={24} />;
-        case BaseNotificationType.Error:
-            return <AlertDiamondIcon size={24} />;
-        case BaseNotificationType.Warning:
-            return <AlertDiamondIcon size={24} />;
-        case BaseNotificationType.Info:
-            return <InformationCircleIcon size={24} />;
-        default:
-            return <CheckmarkCircle02Icon size={24} />;
+            case BaseNotificationType.Success:
+                return <CheckmarkCircle02Icon size={24} />;
+            case BaseNotificationType.Error:
+                return <AlertDiamondIcon size={24} />;
+            case BaseNotificationType.Warning:
+                return <AlertDiamondIcon size={24} />;
+            case BaseNotificationType.Info:
+                return <InformationCircleIcon size={24} />;
+            default:
+                return <CheckmarkCircle02Icon size={24} />;
         }
     };
 
     const notificationColor = () => {
         switch (props.type) {
-        case BaseNotificationType.Success:
-            return "bg-green-500";
-        case BaseNotificationType.Error:
-            return "bg-red-500";
-        case BaseNotificationType.Warning:
-            return "bg-yellow-500";
-        case BaseNotificationType.Info:
-            return "bg-blue-500";
-        default:
-            return "bg-green-500";
+            case BaseNotificationType.Success:
+                return "bg-green-500";
+            case BaseNotificationType.Error:
+                return "bg-red-500";
+            case BaseNotificationType.Warning:
+                return "bg-yellow-500";
+            case BaseNotificationType.Info:
+                return "bg-blue-500";
+            default:
+                return "bg-green-500";
         }
     };
 
@@ -77,7 +77,14 @@ export default function BaseNotification(props: Props) {
         >
             {notificationIcon()}
             <span>{props.message}</span>
-            <button onClick={props.onClose} className="ml-auto -mr-1 -my-1 p-1 hover:bg-black/10 rounded-full">
+            <button
+                onClick={props.onClose}
+                className={`
+                    ml-auto -mr-1 -my-1 p-1
+                    hover:bg-black/10
+                    rounded-full
+                `}
+            >
                 <Cancel01Icon size={18} />
             </button>
         </div>

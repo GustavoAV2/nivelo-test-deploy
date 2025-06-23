@@ -1,11 +1,13 @@
 "use client";
 
 import BaseButton from "@/components/base-button/base-button";
-import BaseFooter from "@/components/base-footer/base-footer";
 import BaseForm from "@/components/base-form/base-form";
 import BaseInput from "@/components/base-input/base-input";
 import { useNotification } from "@/components/base-notification/_hooks/base-notification-hook";
-import BasePage from "@/components/base-page/base-page";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createCategoryAsync } from "../_actions/category-actions";
@@ -26,19 +28,24 @@ export default function PageCategoriesNew() {
     };
 
     return (
-        <>
-            <BasePage className="flex flex-col flex-grow max-w-sm">
-                <div className="mb-6">
+        <BaseRoot>
+            <BasePage>
+                <BaseFlexColSpaced>
                     <BaseForm>
-                        <BaseInput className="mb-2" type={"text"} onInput={setCategoryName} label={"Nome da Categoria:"} />
+                        <BaseInput
+                            type="text"
+                            label="Nome da Categoria:"
+                            onInput={setCategoryName}
+                        />
                     </BaseForm>
-                </div>
-                <div className="flex flex-col items-stretch">
-                    <BaseButton className="mb-2" type="button" color="primary" onClick={handleCreateCategoryAsync}>Salvar</BaseButton>
-                    <BaseButton className="mb-2" type="button" color="secondary" onClick={backToCategoriesList}>Cancelar</BaseButton>
-                </div>
+                    <BaseButton type="button" color="primary" onClick={handleCreateCategoryAsync}>
+                        <BaseTextCenter text="Salvar" />
+                    </BaseButton>
+                    <BaseButton type="button" color="secondary" onClick={backToCategoriesList}>
+                        <BaseTextCenter text="Cancelar" />
+                    </BaseButton>
+                </BaseFlexColSpaced>
             </BasePage>
-            <BaseFooter />
-        </>
+        </BaseRoot>
     );
 }

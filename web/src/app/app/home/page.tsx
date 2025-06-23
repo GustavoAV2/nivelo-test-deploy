@@ -1,12 +1,19 @@
-import { getMonthlySummary } from "@/app/app/home/_actions/home-actions";
+import { getBalancesSummary, getMonthlySummary } from "@/app/app/home/_actions/home-actions";
 import { getUser } from "@/app/user/_actions/user-actions";
+import BaseActions from "@/components/base-actions/base-actions";
 import BaseAvatar from "@/components/base-avatar/base-avatar";
 import BaseCard from "@/components/base-card/base-card";
-import BaseFooterLink from "@/components/base-footer-link/base-footer-link";
-import BaseLabel from "@/components/base-label/base-label";
-import BasePage from "@/components/base-page/base-page";
+import BaseBarChart from "@/components/base-echart/base-bar-chart";
+import BasePieChart from "@/components/base-echart/base-pie-chart";
+import BaseHighlight from "@/components/base-highlight/base-highlight";
+import BaseText from "@/components/base-text/base-text";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexCol from "@/layout/base-flex-col/base-flex-col";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
+import BaseFlexRowSpaced from "@/layout/base-flex-row-spaced/base-flex-row-spaced";
+import BasePage from "@/layout/base-page/base-page";
+import BaseRoot from "@/layout/base-root/base-root";
 import { numberToMoney } from "@/utils/money/money";
-import { PencilEdit02Icon } from "hugeicons-react";
 
 export default async function PageHome() {
     const user = await getUser();
@@ -16,84 +23,116 @@ export default async function PageHome() {
     const year = today.getFullYear();
 
     const summary = await getMonthlySummary(month, year);
+    const balancesSummary = await getBalancesSummary();
 
     const welcomeMessage = () => {
         if (user && user.user_metadata && user.user_metadata.name) {
-            return <BaseLabel className="mb-6">{`Bem-vindo(a), ${user.user_metadata.name}!`}</BaseLabel>;
+            return <BaseText text={`Bem-vindo(a), ${user.user_metadata.name}!`} />;
         } else {
-            return <BaseLabel className="mb-6">{"Bem-vindo(a)!"}</BaseLabel>;;
+            return <BaseText text={"Bem-vindo(a)!"} />;
         }
     };
 
     const userAvatar = () => {
         if (user && user.user_metadata && user.user_metadata.avatar_url) {
-            return <BaseAvatar className="mb-3" src={user.user_metadata.avatar_url} />;
+            return <BaseAvatar src={user.user_metadata.avatar_url} />;
         } else {
             return null;
         }
     };
 
-    const economyPercentage = () => {
-        if (summary.economyPercentage) {
-            return summary.economyPercentage.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
-        } else {
-            return "-";
-        }
+    const expenses = () => {
+        return Number((summary.totalExpenses / 100).toFixed(2));
     };
 
-    return (
-        <>
-            <BasePage className="flex flex-col flex-grow">
-                {userAvatar()}
-                {welcomeMessage()}
-                <BaseCard className="flex flex-col mb-6">
-                    <BaseLabel className="mb-4">Resumo do Mês</BaseLabel>
-                    <div className="flex flex-row gap-6">
-                        <div className="flex flex-col items-center gap-2">
-                            <div className="flex items-center justify-center border-blue-300 border-8 rounded-full w-20 h-20">
-                                <BaseLabel>{economyPercentage()}%</BaseLabel>
-                            </div>
-                            <BaseLabel>Economia</BaseLabel>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <div className="flex flex-col">
-                                <BaseLabel >Total Receitas</BaseLabel>
-                                <BaseLabel className="text-lg">{numberToMoney(summary.totalIncome, "R$")}</BaseLabel>
-                            </div>
-                            <div className="flex flex-col">
-                                <BaseLabel >Total Despesas</BaseLabel>
-                                <BaseLabel className="text-lg">{numberToMoney(summary.totalExpenses, "R$")}</BaseLabel>
-                            </div>
-                        </div>
-                    </div>
-                </BaseCard>
-                <BaseCard>
-                    <div className="mb-6 flex flex-row justify-between">
-                        <BaseLabel >Saldos</BaseLabel>
-                        <PencilEdit02Icon size={24} />
-                    </div>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex flex-col">
-                            <BaseLabel className="text-lg">R$ 120.000,00</BaseLabel>
-                            <BaseLabel className="text-slate-600 dark:text-slate-400">Total em conta</BaseLabel>
-                        </div>
-                        <div className="flex flex-col">
-                            <BaseLabel className="text-lg">R$ 250.000,00</BaseLabel>
-                            <BaseLabel className="text-slate-600 dark:text-slate-400">Patrimônio</BaseLabel>
-                        </div>
-                        <div className="flex flex-col">
-                            <BaseLabel className="text-lg">R$ 12.000,00</BaseLabel>
-                            <BaseLabel className="text-slate-600 dark:text-slate-400">A pagar</BaseLabel>
-                        </div>
-                        <div className="flex flex-col">
-                            <BaseLabel className="text-lg">R$ 30.000,00</BaseLabel>
-                            <BaseLabel className="text-slate-600 dark:text-slate-400">A receber</BaseLabel>
-                        </div>
-                    </div>
-                </BaseCard>
-            </BasePage>
+    const chartPieData = [
+        { name: "Economia", value: Number(((summary.totalIncome / 100) - expenses()).toFixed(2)) },
+        { name: "Gastos", value: expenses() }
+    ];
 
-            <BaseFooterLink />
-        </>
+    const chartBarData = summary.expenses.map(expense => ({
+        name: expense.category?.name ?? "Sem Categoria",
+        value: Number((expense.amount / 100).toFixed(2))
+    }));
+
+    const expensesByCategoria: { [key: string]: number } = {};
+    chartBarData.forEach(item => {
+        const { name, value } = item;
+
+        if (expensesByCategoria[name]) {
+            expensesByCategoria[name] += value;
+        } else {
+            expensesByCategoria[name] = value;
+        }
+    }
+    );
+
+    return (
+        <BaseRoot>
+            <BasePage>
+                <BaseFlexColSpaced>
+                    <BaseFlexColSpaced>
+                        {userAvatar()}
+                        {welcomeMessage()}
+                    </BaseFlexColSpaced>
+                    <BaseCard>
+                        <BaseText text="Resumo do mês"></BaseText>
+                        <BaseFlexColSpaced>
+                            <BaseFlexRowSpaced>
+                                <BaseFlexColSpaced>
+                                    <BaseFlexRowCenter>
+                                        <BasePieChart data={chartPieData} top={-20} />
+                                    </BaseFlexRowCenter>
+                                </BaseFlexColSpaced>
+                                <BaseFlexColSpaced>
+                                    <BaseFlexCol>
+                                        <BaseText text="Total Receitas" />
+                                        <BaseHighlight>
+                                            <BaseText text={numberToMoney(summary.totalIncome, "R$")} />
+                                        </BaseHighlight>
+                                    </BaseFlexCol>
+                                    <BaseFlexCol>
+                                        <BaseText text="Total Despesas" />
+                                        <BaseHighlight>
+                                            <BaseText text={numberToMoney(summary.totalExpenses, "R$")} />
+                                        </BaseHighlight>
+                                    </BaseFlexCol>
+                                </BaseFlexColSpaced>
+                            </BaseFlexRowSpaced>
+                        </BaseFlexColSpaced>
+                    </BaseCard>
+
+                    <BaseCard>
+                        <BaseText text="Saldos"></BaseText>
+                        {balancesSummary.length === 0 ?
+                            <BaseText text="Nenhum saldo encontrado." /> :
+                            <BaseFlexColSpaced>
+                                {balancesSummary.map(balance => (
+                                    <div key={balance.id} className="flex flex-col">
+                                        <BaseHighlight>
+                                            <BaseText text={numberToMoney(balance.total_amount, "R$")} />
+                                        </BaseHighlight>
+                                        <BaseText text={balance.name} />
+                                    </div>
+                                ))}
+                            </BaseFlexColSpaced>
+                        }
+                    </BaseCard>
+
+                    <BaseCard>
+                        <BaseText text="Categorias de gastos do mês"></BaseText>
+                        <BaseFlexColSpaced>
+                            <BaseFlexRowSpaced>
+                                {expensesByCategoria == null ?
+                                    <BaseText text="Nenhum gasto esse mês." /> :
+                                    <BaseBarChart data={expensesByCategoria} />
+                                }
+                            </BaseFlexRowSpaced>
+                        </BaseFlexColSpaced>
+                    </BaseCard>
+                </BaseFlexColSpaced>
+            </BasePage >
+            <BaseActions />
+        </BaseRoot >
     );
 }

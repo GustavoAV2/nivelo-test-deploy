@@ -19,12 +19,15 @@ export default function BaseMenuBackdrop(props: Props) {
     };
 
     return (
-        <div className={`
-            ${pointerEventsTransition()}
-            ${backdropTransition()}
-            fixed top-0 bottom-0 left-0 right-0
-            transition-colors`}
-        onClick={props.onBackdropClick}
-        ></div>
+        <div
+            className={`
+                ${pointerEventsTransition()}
+                ${backdropTransition()}
+                fixed top-0 bottom-0 left-0 right-0
+                transition-colors
+            `}
+            onClick={props.onBackdropClick}
+        >
+        </div>
     );
 }

@@ -27,22 +27,35 @@ export default function BaseModalContainer(props: Props) {
     };
 
     return (
-        <div className={`
-            fixed top-0 bottom-0 left-0 right-0
-            flex justify-center items-center
-            pointer-events-none`}
+        <div
+            className={`
+                fixed top-0 bottom-0 left-0 right-0
+                flex justify-center items-center
+                pointer-events-none
+            `}
         >
-            <div className={`
-                ${pointerEventsTransition()}
-                ${modalTransition()}
-                p-4 min-w-72 max-w-80
-                shadow rounded
-                transition-opacity
-                bg-blue-200 dark:bg-gray-700`}
+            <div
+                className={`
+                    ${pointerEventsTransition()}
+                    ${modalTransition()}
+                    p-4 min-w-72 max-w-80
+                    shadow rounded-lg
+                    transition-opacity
+                    duration-300
+                    bg-slate-50 dark:bg-slate-800
+                `}
             >
-                <BaseModalContainerHeader modalTitle={props.modalTitle} onModalClose={props.onModalClose} />
-                <BaseModalContainerBody modalContent={props.modalContent} />
-                <BaseModalContainerFooter onModalCancel={props.onModalCancel} onModalConfirm={props.onModalConfirm} />
+                <BaseModalContainerHeader
+                    modalTitle={props.modalTitle}
+                    onModalClose={props.onModalClose}
+                />
+                <BaseModalContainerBody
+                    modalContent={props.modalContent}
+                />
+                <BaseModalContainerFooter
+                    onModalCancel={props.onModalCancel}
+                    onModalConfirm={props.onModalConfirm}
+                />
             </div>
         </div>
     );

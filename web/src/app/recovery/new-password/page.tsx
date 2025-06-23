@@ -1,18 +1,22 @@
 "use client";
 
+import BaseAlert from "@/components/base-alert/base-alert";
 import BaseButton from "@/components/base-button/base-button";
-import BaseCentralizer from "@/components/base-centralizer/base-centralizer";
+import BaseFloatable from "@/components/base-floatable/base-floatable";
 import BaseForm from "@/components/base-form/base-form";
-import BaseFrame from "@/components/base-frame/base-frame";
 import BaseInput from "@/components/base-input/base-input";
-import BaseLabel from "@/components/base-label/base-label";
 import BaseLink from "@/components/base-link/base-link";
-import BasePage from "@/components/base-page/base-page";
+import BaseSubtitle from "@/components/base-subtitle/base-subtitle";
+import BaseTextCenter from "@/components/base-text-center/base-text-center";
+import BaseTitle from "@/components/base-title/base-title";
+import BaseFlexColSpaced from "@/layout/base-flex-col-spaced/base-flex-col-spaced";
+import BaseFlexRowCenter from "@/layout/base-flex-row-center/base-flex-row-center";
 import { ResetPasswordIcon } from "hugeicons-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import { resetPassword } from "../_actions/recovery-actions";
+import BaseRoot from "@/layout/base-root/base-root";
 
 export default function RecoveryNewPassword() {
     const [password, setPassword] = useState("");
@@ -61,43 +65,69 @@ export default function RecoveryNewPassword() {
         setIsPasswordLenghtInvalid(false);
     };
 
+    const passwordConfirmInvalidAlert = () => {
+        if (isPasswordConfirmInvalid) {
+            return <BaseAlert color="danger" text="As senhas devem ser iguais." />;
+        }
+    };
+
+    const passwordLenghtInvalidAlert = () => {
+        if (isPasswordLenghtInvalid) {
+            return <BaseAlert color="danger" text="A senha deve ter no mínimo 6 caracteres." />;
+        }
+    };
+
     return (
-        <BaseFrame>
-            <BaseCentralizer>
-                <BasePage className="max-w-sm">
-                    <div className="flex flex-col items-center mb-4">
-                        <ResetPasswordIcon className="mb-6" size={48}></ResetPasswordIcon>
-                        <BaseLabel className="text-lg text-center mb-4">Cadastrar sua nova senha</BaseLabel>
-                        <BaseLabel className="text-center">Digite uma nova senha para ser utilizada com a sua conta</BaseLabel>
-                    </div>
+        <BaseRoot>
+            <BaseFloatable>
+                <BaseFlexColSpaced>
+                    <BaseFlexRowCenter>
+                        <ResetPasswordIcon size={48} />
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseTitle>
+                            <BaseTextCenter text="Cadastrar sua nova senha" />
+                        </BaseTitle>
+                    </BaseFlexRowCenter>
+                    <BaseFlexRowCenter>
+                        <BaseSubtitle>
+                            <BaseTextCenter text="Digite uma nova senha para ser utilizada com a sua conta" />
+                        </BaseSubtitle>
+                    </BaseFlexRowCenter>
                     <BaseForm onSubmit={handlePasswordResetAsync}>
-                        <div className="mb-10">
-                            <BaseInput className="mb-6" type={"password"} label={"Senha:"} required={true} onInput={handleSetPassword}
-                                invalidFeedback={"Insira uma senha para continuar."} />
-                            <BaseInput type={"password"} label={"Confirmar senha:"} required={true} onInput={handleSetPasswordConfirmation}
-                                invalidFeedback={"Insira uma senha para continuar."} />
-                            {isPasswordConfirmInvalid &&
-                                <BaseLabel className="block mt-2 text-sm text-red-500">
-                                    As senhas devem ser iguais.
-                                </BaseLabel>
-                            }
-                            {isPasswordLenghtInvalid &&
-                                <BaseLabel className="block mt-2 text-sm text-red-500">
-                                    A senha deve ter no mínimo 6 caracteres.
-                                </BaseLabel>
-                            }
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <BaseButton className="mb-4" color={"primary"}>Cadastrar nova senha</BaseButton>
-                        </div>
+                        <BaseFlexColSpaced>
+                            <BaseInput
+                                type="password"
+                                label="Senha:"
+                                placeholder="Digite sua nova senha"
+                                required
+                                onInput={handleSetPassword}
+                                invalidFeedback="Insira uma senha para continuar."
+                            />
+                            <BaseInput
+                                type="password"
+                                label="Confirmar senha:"
+                                placeholder="Confirme sua nova senha"
+                                required
+                                onInput={handleSetPasswordConfirmation}
+                                invalidFeedback="Insira uma senha para continuar."
+                            />
+                            {passwordConfirmInvalidAlert()}
+                            {passwordLenghtInvalidAlert()}
+                            <BaseButton type="submit" color="primary">
+                                <BaseTextCenter text="Cadastrar nova senha" />
+                            </BaseButton>
+                        </BaseFlexColSpaced>
                     </BaseForm>
-                    <div className="flex flex-col items-center">
+                    <BaseFlexRowCenter>
                         <Link href="/login">
-                            <BaseLink>Retornar à tela de login</BaseLink>
+                            <BaseLink>
+                                <BaseTextCenter text="Retornar à tela de login" />
+                            </BaseLink>
                         </Link>
-                    </div>
-                </BasePage>
-            </BaseCentralizer>
-        </BaseFrame >
+                    </BaseFlexRowCenter>
+                </BaseFlexColSpaced>
+            </BaseFloatable>
+        </BaseRoot>
     );
 }

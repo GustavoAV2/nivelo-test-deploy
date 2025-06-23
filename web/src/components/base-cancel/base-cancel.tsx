@@ -6,8 +6,12 @@ interface Props {
 
 export default function BaseCancel(props: Props) {
     return (
-        <div className="cursor-pointer" onClick={props.onClick}>
+        <button
+            type="button"
+            className="cursor-pointer"
+            onClick={props.onClick}
+        >
             <Cancel01Icon />
-        </div>
+        </button>
     );
 }

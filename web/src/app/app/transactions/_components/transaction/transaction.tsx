@@ -1,5 +1,4 @@
-import BaseCard from "@/components/base-card/base-card";
-import BaseLabel from "@/components/base-label/base-label";
+import BaseButton from "@/components/base-button/base-button";
 import { formatDateTimeToString } from "@/utils/date/date";
 import { numberToMoney } from "@/utils/money/money";
 import Link from "next/link";
@@ -12,44 +11,55 @@ interface Props {
 export default function Transaction(props: Props) {
     const transactionRoute = () => {
         switch (props.transactionModel.type) {
-        case TransactionType.Income:
-            return `/app/transactions/incomes/${props.transactionModel.id}/edit`;
-        case TransactionType.Expense:
-            return `/app/transactions/expenses/${props.transactionModel.id}/edit`;
-        case TransactionType.Transfer:
-            return `/app/transactions/transfers/${props.transactionModel.id}/edit`;
-        default:
-            throw new Error("Tipo desconhecido de transação");
+            case TransactionType.Income:
+                return `/app/transactions/incomes/${props.transactionModel.id}/edit`;
+            case TransactionType.Expense:
+                return `/app/transactions/expenses/${props.transactionModel.id}/edit`;
+            case TransactionType.Transfer:
+                return `/app/transactions/transfers/${props.transactionModel.id}/edit`;
+            default:
+                throw new Error("Tipo desconhecido de transação");
         }
     };
 
     const transactionColor = () => {
         switch (props.transactionModel.type) {
-        case TransactionType.Income:
-            return "text-green-600 text-lg";
-        case TransactionType.Expense:
-            return "text-red-600 text-lg";
-        case TransactionType.Transfer:
-            return "text-blue-600 text-lg";
-        default:
-            return "text-gray-800 text-lg";
+            case TransactionType.Income:
+                return "text-green-500";
+            case TransactionType.Expense:
+                return "text-red-500";
+            case TransactionType.Transfer:
+                return "text-amber-400";
+            default:
+                return "text-gray-900";
+        }
+    };
+
+    const transactionType = () => {
+        switch (props.transactionModel.type) {
+            case TransactionType.Income:
+                return "Receita";
+            case TransactionType.Expense:
+                return "Despesa";
+            case TransactionType.Transfer:
+                return "Transferência";
+            default:
+                return "";
         }
     };
 
     return (
         <Link href={transactionRoute()}>
-            <BaseCard className="mb-5 cursor-pointer">
+            <BaseButton color="tertiary">
                 <div className="flex flex-row justify-between">
-                    <BaseLabel className="text-gray-900 dark:text-white text-lg">{props.transactionModel.type}</BaseLabel>
-                    <BaseLabel className={transactionColor()}>
-                        {numberToMoney(props.transactionModel.amount, "R$")}
-                    </BaseLabel>
+                    <span>{props.transactionModel.description}</span>
+                    <span className={transactionColor()}>{numberToMoney(props.transactionModel.amount, "R$")}</span>
                 </div>
                 <div className="flex flex-row justify-between">
-                    <BaseLabel className="text-gray-900 dark:text-white">{props.transactionModel.description}</BaseLabel>
-                    <BaseLabel className="text-gray-900 text-sm dark:text-white">{formatDateTimeToString(props.transactionModel.effectiveDate as Date)}</BaseLabel>
+                    <span>{transactionType()}</span>
+                    <span>{formatDateTimeToString(props.transactionModel.effectiveDate as Date)}</span>
                 </div>
-            </BaseCard>
+            </BaseButton>
         </Link>
     );
 }
